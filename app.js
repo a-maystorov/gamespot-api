@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-import express from 'express';
+const express = require('express');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
