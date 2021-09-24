@@ -10,6 +10,7 @@ const DB = process.env.DB_URI;
 
 const genres = require('./routes/genres');
 const customers = require('./routes/customers');
+const games = require('./routes/games');
 
 mongoose
     .connect(DB, {
@@ -21,5 +22,6 @@ mongoose
 app.use(express.json());
 app.use('/api/genres', genres);
 app.use('/api/customers', customers);
+app.use('/api/games', games);
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}.`));
