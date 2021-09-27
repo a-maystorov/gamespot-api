@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { genreSchema } = require('./genre');
 
 const Game = mongoose.model(
-    'Games',
+    'Game',
     new mongoose.Schema({
         title: {
             type: String,
