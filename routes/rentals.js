@@ -9,12 +9,14 @@ const router = express.Router();
 
 Fawn.init(process.env.DB_URI);
 
-router.get('/', async(req, res) => {
+const auth = require('../middleware/auth');
+
+router.get('/', auth, async(req, res) => {
     const rentals = await Rental.find().sort({ dateOut: -1 });
     res.send(rentals);
 });
 
-router.post('/', async(req, res) => {
+router.post('/', auth, async(req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -52,7 +54,7 @@ router.post('/', async(req, res) => {
     }
 });
 
-router.get('/:id', async(req, res) => {
+router.get('/:id', auth, async(req, res) => {
     const rental = await Rental.findById(req.params.id);
 
     if (!rental)

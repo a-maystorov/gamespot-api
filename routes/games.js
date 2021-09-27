@@ -4,12 +4,15 @@ const { Genre } = require('../models/genre');
 const express = require('express');
 const router = express.Router();
 
-router.get('/', async(req, res) => {
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
+
+router.get('/', auth, async(req, res) => {
     const games = await Game.find().sort({ name: 1 });
     res.send(games);
 });
 
-router.post('/', async(req, res) => {
+router.post('/', auth, async(req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -31,7 +34,7 @@ router.post('/', async(req, res) => {
     res.send(game);
 });
 
-router.put('/:id', async(req, res) => {
+router.put('/:id', auth, async(req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -56,7 +59,7 @@ router.put('/:id', async(req, res) => {
     res.send(game);
 });
 
-router.delete('/:id', async(req, res) => {
+router.delete('/:id', [auth, admin], async(req, res) => {
     const game = await Game.findByIdAndRemove(req.params.id);
 
     if (!game)
@@ -65,7 +68,7 @@ router.delete('/:id', async(req, res) => {
     res.send(game);
 });
 
-router.get('/:id', async(req, res) => {
+router.get('/:id', auth, async(req, res) => {
     const game = await Game.findById(req.params.id);
 
     if (!game)
