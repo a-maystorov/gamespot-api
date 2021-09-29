@@ -6,6 +6,7 @@ const router = express.Router();
 
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const validateObjectId = require('../middleware/validateObjectId');
 
 router.get('/', auth, async(req, res) => {
     const games = await Game.find().sort({ name: 1 });
@@ -34,7 +35,7 @@ router.post('/', auth, async(req, res) => {
     res.send(game);
 });
 
-router.put('/:id', auth, async(req, res) => {
+router.put('/:id', [auth, validateObjectId], async(req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -59,7 +60,7 @@ router.put('/:id', auth, async(req, res) => {
     res.send(game);
 });
 
-router.delete('/:id', [auth, admin], async(req, res) => {
+router.delete('/:id', [auth, admin, validateObjectId], async(req, res) => {
     const game = await Game.findByIdAndRemove(req.params.id);
 
     if (!game)
@@ -68,7 +69,7 @@ router.delete('/:id', [auth, admin], async(req, res) => {
     res.send(game);
 });
 
-router.get('/:id', auth, async(req, res) => {
+router.get('/:id', [auth, validateObjectId], async(req, res) => {
     const game = await Game.findById(req.params.id);
 
     if (!game)

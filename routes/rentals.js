@@ -10,6 +10,7 @@ const router = express.Router();
 Fawn.init(process.env.DB_URI);
 
 const auth = require('../middleware/auth');
+const validateObjectId = require('../middleware/validateObjectId');
 
 router.get('/', auth, async(req, res) => {
     const rentals = await Rental.find().sort({ dateOut: -1 });
@@ -54,7 +55,7 @@ router.post('/', auth, async(req, res) => {
     }
 });
 
-router.get('/:id', auth, async(req, res) => {
+router.get('/:id', [auth, validateObjectId], async(req, res) => {
     const rental = await Rental.findById(req.params.id);
 
     if (!rental)
