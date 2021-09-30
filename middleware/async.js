@@ -7,3 +7,5 @@ module.exports = function asyncMiddleware(handler) {
         }
     };
 };
+
+// Can achive the same result with the express-async-errors package.

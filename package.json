@@ -28,6 +28,8 @@
         "lodash": "^4.17.21",
         "moment": "^2.29.1",
         "mongoose": "^6.0.7",
-        "nodemon": "^2.0.12"
+        "nodemon": "^2.0.12",
+        "winston": "^3.3.3",
+        "winston-mongodb": "^5.0.7"
     }
 }
