@@ -28,7 +28,6 @@ mongoose
     .then(() => console.log(`Connected to ${DB}.`));
 
 app.use(express.json());
-app.use(error);
 
 app.use('/api/genres', genres);
 app.use('/api/customers', customers);
@@ -36,6 +35,8 @@ app.use('/api/games', games);
 app.use('/api/rentals', rentals);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
+
+app.use(error);
 
 if (!process.env.JWT_KEY) {
     console.error('ERROR: JWT Key is not defined.');
