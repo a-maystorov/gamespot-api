@@ -24,7 +24,7 @@ logger.exceptions.handle(
 
 logger.add(
     new winston.transports.MongoDB({
-        db: 'mongodb://localhost/GameSpot',
+        db: process.env.DB_URI,
         options: { useUnifiedTopology: true },
     })
 );
@@ -36,6 +36,7 @@ if (process.env.NODE_ENV !== 'production') {
                 winston.format.colorize(),
                 winston.format.simple()
             ),
+            handleExceptions: true,
         })
     );
 }
