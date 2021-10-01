@@ -13,17 +13,25 @@ const logger = winston.createLogger({
     ),
     defaultMeta: { service: 'GameSpot' },
     transports: [
-        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+        new winston.transports.File({
+            filename: 'logs/error.log',
+            level: 'error',
+        }),
         new winston.transports.File({ filename: 'logs/combined.log' }),
     ],
 });
 
 logger.exceptions.handle(
-    new winston.transports.File({ filename: 'logs/exceptions.log' })
+    new winston.transports.File({ filename: 'logs/exceptions.log' }),
+
+    process.on('uncaughtException', (ex) => {
+        throw ex;
+    })
 );
 
 logger.add(
     new winston.transports.MongoDB({
+        level: 'info',
         db: process.env.DB_URI,
         options: { useUnifiedTopology: true },
     })
