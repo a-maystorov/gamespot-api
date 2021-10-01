@@ -10,10 +10,22 @@ const validateObjectId = require('../middleware/validateObjectId');
 
 router.get(
     '/',
-    auth,
     asyncMiddleware(async(req, res) => {
         const genres = await Genre.find().sort({ name: 1 });
         res.send(genres);
+    })
+);
+
+router.get(
+    '/:id',
+    validateObjectId,
+    asyncMiddleware(async(req, res) => {
+        const genre = await Genre.findById(req.params.id);
+
+        if (!genre)
+            return res.status(404).send('The genre with the given ID was not found.');
+
+        res.send(genre);
     })
 );
 
@@ -52,19 +64,7 @@ router.put(
 router.delete(
     '/:id', [auth, admin, validateObjectId],
     asyncMiddleware(async(req, res) => {
-        const genre = await Genre.findByIdAndRemove(req.params.id);
-
-        if (!genre)
-            return res.status(404).send('The genre with the given ID was not found.');
-
-        res.send(genre);
-    })
-);
-
-router.get(
-    '/:id', [auth, validateObjectId],
-    asyncMiddleware(async(req, res) => {
-        const genre = await Genre.findById(req.params.id);
+        const genre = await Genre.findByIdAndDelete(req.params.id);
 
         if (!genre)
             return res.status(404).send('The genre with the given ID was not found.');
