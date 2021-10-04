@@ -14,7 +14,7 @@ const rentalSchema = new mongoose.Schema({
                 type: String,
                 required: true,
                 trim: true,
-                minlength: 5,
+                minlength: 3,
                 maxlength: 255,
             },
             dailyRentalRate: {
