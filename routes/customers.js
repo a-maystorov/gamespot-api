@@ -10,10 +10,24 @@ const validateObjectId = require('../middleware/validateObjectId');
 
 router.get(
     '/',
-    auth,
     asyncMiddleware(async(req, res) => {
         const customers = await Customer.find().sort({ name: 1 });
         res.send(customers);
+    })
+);
+
+router.get(
+    '/:id',
+    validateObjectId,
+    asyncMiddleware(async(req, res) => {
+        const customer = await Customer.findById(req.params.id);
+
+        if (!customer)
+            return res
+                .status(404)
+                .send('The customer with the given ID was not found.');
+
+        res.send(customer);
     })
 );
 
@@ -63,20 +77,6 @@ router.delete(
     '/:id', [auth, admin, validateObjectId],
     asyncMiddleware(async(req, res) => {
         const customer = await Customer.findByIdAndRemove(req.params.id);
-
-        if (!customer)
-            return res
-                .status(404)
-                .send('The customer with the given ID was not found.');
-
-        res.send(customer);
-    })
-);
-
-router.get(
-    '/:id', [auth, validateObjectId],
-    asyncMiddleware(async(req, res) => {
-        const customer = await Customer.findById(req.params.id);
 
         if (!customer)
             return res
