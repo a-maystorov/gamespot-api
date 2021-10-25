@@ -1,4 +1,4 @@
-const logger = require('./logger');
+const winston = require('winston');
 const mongoose = require('mongoose');
 
 const DB = process.env.DB_URI;
@@ -11,13 +11,13 @@ module.exports = function() {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             })
-            .then(() => logger.info(`Connected to ${TESTS_DB}.`));
+            .then(() => winston.info(`Connected to ${TESTS_DB}.`));
     } else {
         mongoose
             .connect(DB, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             })
-            .then(() => logger.info(`Connected to ${DB}.`));
+            .then(() => winston.info(`Connected to ${DB}.`));
     }
 };
