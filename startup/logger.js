@@ -1,9 +1,5 @@
 const winston = require('winston');
-// require('winston-mongodb');
 require('express-async-errors');
-
-const DB = process.env.DB_URI;
-const TESTS_DB = process.env.TESTS_DB_URI;
 
 module.exports = function() {
     winston.createLogger({
@@ -33,14 +29,6 @@ module.exports = function() {
             throw ex;
         })
     );
-
-    // winston.add(
-    //     new winston.transports.MongoDB({
-    //         level: 'info',
-    //         db: TESTS_DB,
-    //         options: { useUnifiedTopology: true },
-    //     })
-    // );
 
     if (process.env.NODE_ENV !== 'production') {
         winston.add(

@@ -7,7 +7,9 @@ const Fawn = require('fawn');
 const express = require('express');
 const router = express.Router();
 
-Fawn.init(process.env.DB_URI);
+const DB = process.env.DB_URI;
+
+Fawn.init(DB);
 
 const auth = require('../middleware/auth');
 const validateObjectId = require('../middleware/validateObjectId');
