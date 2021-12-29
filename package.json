@@ -35,7 +35,6 @@
         "mongodb": "^4.1.4",
         "mongodb-core": "^3.2.7",
         "mongoose": "^6.0.12",
-        "nodemon": "^2.0.14",
         "winston": "^3.3.3"
     },
     "devDependencies": {

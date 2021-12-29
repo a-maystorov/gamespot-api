@@ -6,8 +6,8 @@ const data = [{
         name: 'MMORPG',
         games: [
             { title: 'World of Warcraft', numberInStock: 5, dailyRentalRate: 2 },
-            { title: 'The Hangover', numberInStock: 10, dailyRentalRate: 2 },
-            { title: 'Wedding Crashers', numberInStock: 15, dailyRentalRate: 2 },
+            { title: 'Final Fantasy XIV', numberInStock: 10, dailyRentalRate: 2 },
+            { title: 'Blade and Soul', numberInStock: 15, dailyRentalRate: 2 },
         ],
     },
     {
@@ -22,11 +22,7 @@ const data = [{
         name: 'RPG',
         games: [
             { title: 'Dark Souls', numberInStock: 5, dailyRentalRate: 2 },
-            {
-                title: 'Sekiro: Shadows Die Twice',
-                numberInStock: 10,
-                dailyRentalRate: 2,
-            },
+            { title: 'Bloodbourne', numberInStock: 10, dailyRentalRate: 2 },
             { title: 'Elden Ring', numberInStock: 15, dailyRentalRate: 2 },
         ],
     },
@@ -41,7 +37,7 @@ const data = [{
 ];
 
 async function seed() {
-    await mongoose.connect(process.env.DB_URI);
+    await mongoose.connect(`mongodb://localhost:27017/GameSpot`);
 
     await Game.deleteMany({});
     await Genre.deleteMany({});
