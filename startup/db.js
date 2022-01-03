@@ -1,8 +1,8 @@
 const winston = require('winston');
 const mongoose = require('mongoose');
 
-const DB = process.env.DB_URI;
-const TESTS_DB = process.env.TESTS_DB_URI;
+const DB = process.env.DB_URI; // change this to your local db uri
+const TESTS_DB = process.env.TESTS_DB_URI; // same for test db
 
 module.exports = function() {
     mongoose

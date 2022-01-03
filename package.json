@@ -1,5 +1,5 @@
 {
-    "name": "gamespot",
+    "name": "gamespot-api",
     "version": "1.0.0",
     "description": "",
     "main": "app.js",
