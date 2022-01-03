@@ -74,7 +74,7 @@ To run this project, install it locally using npm:
 
    - Note: You can view the data but cannot change any of it without an account, you would need to change the port in the app.js file to your desired port or you will not see anything.
 
-## Preview of seeded game in the browser and mongoDB Compass:
+## Preview of seeded games in the browser and mongoDB Compass:
 
 ![alt text](https://github.com/SirDev97/GameSpot-API/blob/main/assets/browser.jpeg?raw=true)
 
