@@ -70,12 +70,12 @@ To run this project, install it locally using npm:
 
 6. Run `node app.js` to start the server.
 
-7. You can view all of the games only your local port: http://localhost:`Your Port Here`/api/games
+7. You can view all of the games only your local port: http://localhost: `PORT` /api/games
 
    - Note: You can view the data but cannot change any of it without an account, you would need to change the port in the app.js file to your desired port or you will not see anything.
 
 ## Preview of seeded game in the browser and mongoDB Compass:
 
-![alt text](https://github.com/SirDev97/the-horde/blob/main/src/assets/dashboard.jpeg?raw=true)
+![alt text](https://github.com/SirDev97/GameSpot-API/blob/main/assets/browser.jpeg?raw=true)
 
-![alt text](https://github.com/SirDev97/the-horde/blob/main/src/assets/create.jpeg?raw=true)
+![alt text](https://github.com/SirDev97/GameSpot-API/blob/main/assets/compass.jpeg?raw=true)
