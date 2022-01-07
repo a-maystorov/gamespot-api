@@ -6,6 +6,8 @@ The backend-api for my fullstack video game rental service project with the main
 
 GameSpot is a project build with the intent of keeping track of the games, customers and rentals of an imaginary video game rental service. The employees of the service are only able to view the games that are in stock initially until they create an account after which they will be able to perform basic CRUD operations and view pages which require authentication with some restrictions (only admins can delete games from the database for example). The project was my intro to unit and integration testing also making use of the best practices to my knowledge including error handling, making everything maintainable and scalable as best I could.
 
+- The frontend is still in the works, more info can be found here: https://github.com/SirDev97/GameSpot
+
 ## Operations the users can commit after an account creation and logging in:
 
 - Create, edit and get customer data.
