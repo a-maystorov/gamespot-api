@@ -9,146 +9,146 @@ const moment = require('moment');
 jest.setTimeout(100 * 1000);
 
 describe('/api/returns', () => {
-    let server;
-    let customerId;
-    let gameId;
-    let rental;
-    let token;
-    let game;
+  let server;
+  let customerId;
+  let gameId;
+  let rental;
+  let token;
+  let game;
 
-    const exe = () => {
-        return request(server)
-            .post('/api/returns')
-            .set('x-auth-token', token)
-            .send({ customerId, gameId });
-    };
+  const exe = () => {
+    return request(server)
+      .post('/api/returns')
+      .set('x-auth-token', token)
+      .send({ customerId, gameId });
+  };
 
-    beforeEach(async() => {
-        server = require('../../../app');
+  beforeEach(async () => {
+    server = require('../../../app');
 
-        customerId = mongoose.Types.ObjectId();
-        gameId = mongoose.Types.ObjectId();
-        token = new User().generateAuthToken();
+    customerId = mongoose.Types.ObjectId();
+    gameId = mongoose.Types.ObjectId();
+    token = new User().generateAuthToken();
 
-        game = new Game({
-            _id: gameId,
-            title: '12345',
-            dailyRentalRate: 3,
-            genre: { name: '12345' },
-            numberInStock: 10,
-        });
-
-        await game.save();
-
-        rental = new Rental({
-            customer: {
-                _id: customerId,
-                name: '123',
-                phone: '123456',
-            },
-            game: {
-                _id: gameId,
-                title: '123',
-                dailyRentalRate: 2,
-            },
-        });
-
-        await rental.save();
+    game = new Game({
+      _id: gameId,
+      title: '12345',
+      dailyRentalRate: 3,
+      genre: { name: '12345' },
+      numberInStock: 10,
     });
 
-    afterEach(async() => {
-        await server.close();
-        await Rental.remove({});
-        await Game.remove({});
+    await game.save();
+
+    rental = new Rental({
+      customer: {
+        _id: customerId,
+        name: '123',
+        phone: '123456',
+      },
+      game: {
+        _id: gameId,
+        title: '123',
+        dailyRentalRate: 2,
+      },
     });
 
-    it('should return 401 if client is not logged in', async() => {
-        token = '';
+    await rental.save();
+  });
 
-        const res = await exe();
+  afterEach(async () => {
+    await server.close();
+    await Rental.deleteMany({});
+    await Game.deleteMany({});
+  });
 
-        expect(res.status).toBe(401);
-    });
-    it('should return 400 if customerId is not provided', async() => {
-        customerId = '';
+  it('should return 401 if client is not logged in', async () => {
+    token = '';
 
-        const res = await exe();
+    const res = await exe();
 
-        expect(res.status).toBe(400);
-    });
+    expect(res.status).toBe(401);
+  });
+  it('should return 400 if customerId is not provided', async () => {
+    customerId = '';
 
-    it('should return 400 if gameId is not provided', async() => {
-        gameId = '';
+    const res = await exe();
 
-        const res = await exe();
+    expect(res.status).toBe(400);
+  });
 
-        expect(res.status).toBe(400);
-    });
+  it('should return 400 if gameId is not provided', async () => {
+    gameId = '';
 
-    it('should return 404 if no rental found for the customer/game', async() => {
-        await Rental.remove({});
+    const res = await exe();
 
-        const res = await exe();
+    expect(res.status).toBe(400);
+  });
 
-        expect(res.status).toBe(404);
-    });
+  it('should return 404 if no rental found for the customer/game', async () => {
+    await Rental.deleteMany({});
 
-    it('should return 400 if return is already processed', async() => {
-        rental.dateReturned = new Date();
-        await rental.save();
+    const res = await exe();
 
-        const res = await exe();
+    expect(res.status).toBe(404);
+  });
 
-        expect(res.status).toBe(400);
-    });
+  it('should return 400 if return is already processed', async () => {
+    rental.dateReturned = new Date();
+    await rental.save();
 
-    it('should return 200 if we have a valid request', async() => {
-        const res = await exe();
+    const res = await exe();
 
-        expect(res.status).toBe(200);
-    });
+    expect(res.status).toBe(400);
+  });
 
-    it('should set the returnDate if inut is valid', async() => {
-        await exe();
+  it('should return 200 if we have a valid request', async () => {
+    const res = await exe();
 
-        const rentalInDb = await Rental.findById(rental._id);
-        const diff = new Date() - rentalInDb.dateReturned;
+    expect(res.status).toBe(200);
+  });
 
-        expect(diff).toBeLessThan(10 * 1000);
-    });
+  it('should set the returnDate if inut is valid', async () => {
+    await exe();
 
-    it('should set the rentalFee if inut is valid', async() => {
-        rental.dateOut = moment().add(-7, 'days').toDate();
-        await rental.save();
+    const rentalInDb = await Rental.findById(rental._id);
+    const diff = new Date() - rentalInDb.dateReturned;
 
-        await exe();
+    expect(diff).toBeLessThan(10 * 1000);
+  });
 
-        const rentalInDb = await Rental.findById(rental._id);
+  it('should set the rentalFee if inut is valid', async () => {
+    rental.dateOut = moment().add(-7, 'days').toDate();
+    await rental.save();
 
-        expect(rentalInDb.rentalFee).toBe(14);
-    });
+    await exe();
 
-    it('should increase the game stock if input is valid', async() => {
-        await exe();
+    const rentalInDb = await Rental.findById(rental._id);
 
-        const gameInDb = await Game.findById(gameId);
+    expect(rentalInDb.rentalFee).toBe(14);
+  });
 
-        expect(gameInDb.numberInStock).toBe(game.numberInStock + 1);
-    });
+  it('should increase the game stock if input is valid', async () => {
+    await exe();
 
-    it('should return the rental if input is valid ', async() => {
-        const res = await exe();
+    const gameInDb = await Game.findById(gameId);
 
-        await Rental.findById(rental._id);
+    expect(gameInDb.numberInStock).toBe(game.numberInStock + 1);
+  });
 
-        expect(Object.keys(res.body)).toEqual(
-            expect.arrayContaining([
-                'dateOut',
-                'dateReturned',
-                'rentalFee',
-                'customer',
-                'game',
-            ])
-        );
-    });
+  it('should return the rental if input is valid ', async () => {
+    const res = await exe();
+
+    await Rental.findById(rental._id);
+
+    expect(Object.keys(res.body)).toEqual(
+      expect.arrayContaining([
+        'dateOut',
+        'dateReturned',
+        'rentalFee',
+        'customer',
+        'game',
+      ])
+    );
+  });
 });
