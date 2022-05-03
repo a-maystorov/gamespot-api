@@ -6,9 +6,12 @@ const mongoose = require('mongoose');
 
 describe('/api/customers', () => {
   let server;
+  let token;
 
   beforeEach(() => {
     server = require('../../../app');
+    token = new User().generateAuthToken();
+    return token;
   });
 
   afterEach(async () => {
@@ -18,8 +21,6 @@ describe('/api/customers', () => {
 
   describe('GET /', () => {
     it('should return all customers if user is logged in', async () => {
-      let token = new User().generateAuthToken();
-
       await Customer.collection.insertMany([
         { name: 'customer1', phone: '123456' },
         { name: 'customer2', phone: '654321' },
