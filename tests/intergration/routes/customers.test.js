@@ -121,6 +121,7 @@ describe('/api/customers', () => {
       token = new User().generateAuthToken();
       name = 'customer1';
       phone = '123456';
+      isGold = false;
     });
 
     it('should return 401 if user is not loggend in', async () => {
@@ -131,7 +132,7 @@ describe('/api/customers', () => {
       expect(res.status).toBe(401);
     });
 
-    it('should return 400 if customer name is less than 3 characters', async () => {
+    it('should return 400 if name is less than 3 characters', async () => {
       name = 'ab';
 
       const res = await exe();
@@ -139,7 +140,7 @@ describe('/api/customers', () => {
       expect(res.status).toBe(400);
     });
 
-    it('should return 400 if customer name is more than 20 characters', async () => {
+    it('should return 400 if name is more than 20 characters', async () => {
       name = new Array(22).join('a');
 
       const res = await exe();
@@ -147,7 +148,7 @@ describe('/api/customers', () => {
       expect(res.status).toBe(400);
     });
 
-    it('should return 400 if customer phone is less than 6 characters', async () => {
+    it('should return 400 if phone is less than 6 characters', async () => {
       phone = '12345';
 
       const res = await exe();
@@ -155,7 +156,7 @@ describe('/api/customers', () => {
       expect(res.status).toBe(400);
     });
 
-    it('should return 400 if customer phone is more than 20 characters', async () => {
+    it('should return 400 if phone is more than 20 characters', async () => {
       name = new Array(22).join('1');
 
       const res = await exe();
@@ -166,7 +167,7 @@ describe('/api/customers', () => {
     it('should save the customer if it is valid', async () => {
       await exe();
 
-      const customer = await Customer.find({ name: 'genre1' });
+      const customer = await Customer.find({ name: 'customer1' });
 
       expect(customer).not.toBeNull();
     });
@@ -177,6 +178,93 @@ describe('/api/customers', () => {
       expect(res.body).toHaveProperty('_id');
       expect(res.body).toHaveProperty('name', 'customer1');
       expect(res.body).toHaveProperty('phone', '123456');
+      expect(res.body).toHaveProperty('isGold', false);
     });
   });
+
+  // describe('PUT /:id', () => {
+  //   let token;
+  //   let customer;
+  //   let newName;
+  //   let newPhone;
+  //   let newGoldStatus;
+  //   let id;
+
+  //   const exe = async () => {
+  //     return await request(server)
+  //       .put('/api/genres/' + id)
+  //       .set('x-auth-token', token)
+  //       .send({ name: newName, phone: newPhone, isGold: newGoldStatus });
+  //   };
+
+  //   beforeEach(async () => {
+  //     customer = new Customer({
+  //       name: 'customer1',
+  //       phone: '123456',
+  //       isGold: false,
+  //     });
+  //     await customer.save();
+
+  //     token = new User().generateAuthToken();
+  //     id = customer._id;
+  //     newName = 'updatedName';
+  //     newPhone = '654321'
+  //     newGoldStatus = true;
+  //   });
+
+  //   it('should return 401 if client is not logged in', async () => {
+  //     token = '';
+
+  //     const res = await exe();
+
+  //     expect(res.status).toBe(401);
+  //   });
+
+  //   it('should return 400 if genre is less than 3 characters', async () => {
+  //     newName = '12';
+
+  //     const res = await exe();
+
+  //     expect(res.status).toBe(400);
+  //   });
+
+  //   it('should return 400 if genre is more than 50 characters', async () => {
+  //     newName = new Array(52).join('a');
+
+  //     const res = await exe();
+
+  //     expect(res.status).toBe(400);
+  //   });
+
+  //   it('should return 404 if id is invalid', async () => {
+  //     id = 1;
+
+  //     const res = await exe();
+
+  //     expect(res.status).toBe(404);
+  //   });
+
+  //   it('should return 404 if genre with the given id was not found', async () => {
+  //     id = mongoose.Types.ObjectId();
+
+  //     const res = await exe();
+
+  //     expect(res.status).toBe(404);
+  //   });
+
+  //   it('should update the genre if input is valid', async () => {
+  //     await exe();
+
+  //     const updatedGenre = await Genre.findById(genre._id);
+
+  //     expect(updatedGenre.name).toBe(newName);
+  //   });
+
+  //   it('should return the updated genre if it is valid', async () => {
+  //     const res = await exe();
+
+  //     expect(res.body).toHaveProperty('_id');
+  //     expect(res.body).toHaveProperty('name', newName);
+  //   });
+  // });
 });
