@@ -182,89 +182,109 @@ describe('/api/customers', () => {
     });
   });
 
-  // describe('PUT /:id', () => {
-  //   let token;
-  //   let customer;
-  //   let newName;
-  //   let newPhone;
-  //   let newGoldStatus;
-  //   let id;
+  describe('PUT /:id', () => {
+    let token;
+    let customer;
+    let newName;
+    let newPhone;
+    let newGoldStatus;
+    let id;
 
-  //   const exe = async () => {
-  //     return await request(server)
-  //       .put('/api/genres/' + id)
-  //       .set('x-auth-token', token)
-  //       .send({ name: newName, phone: newPhone, isGold: newGoldStatus });
-  //   };
+    const exe = async () => {
+      return await request(server)
+        .put('/api/customers/' + id)
+        .set('x-auth-token', token)
+        .send({ name: newName, phone: newPhone, isGold: newGoldStatus });
+    };
 
-  //   beforeEach(async () => {
-  //     customer = new Customer({
-  //       name: 'customer1',
-  //       phone: '123456',
-  //       isGold: false,
-  //     });
-  //     await customer.save();
+    beforeEach(async () => {
+      customer = new Customer({
+        name: 'customer1',
+        phone: '123456',
+        isGold: false,
+      });
+      await customer.save();
 
-  //     token = new User().generateAuthToken();
-  //     id = customer._id;
-  //     newName = 'updatedName';
-  //     newPhone = '654321'
-  //     newGoldStatus = true;
-  //   });
+      token = new User().generateAuthToken();
+      id = customer._id;
+      newName = 'updatedName';
+      newPhone = '654321';
+      newGoldStatus = true;
+    });
 
-  //   it('should return 401 if client is not logged in', async () => {
-  //     token = '';
+    it('should return 401 if user is not logged in', async () => {
+      token = '';
 
-  //     const res = await exe();
+      const res = await exe();
 
-  //     expect(res.status).toBe(401);
-  //   });
+      expect(res.status).toBe(401);
+    });
 
-  //   it('should return 400 if genre is less than 3 characters', async () => {
-  //     newName = '12';
+    it('should return 400 if name is less than 3 characters', async () => {
+      newName = 'ab';
 
-  //     const res = await exe();
+      const res = await exe();
 
-  //     expect(res.status).toBe(400);
-  //   });
+      expect(res.status).toBe(400);
+    });
 
-  //   it('should return 400 if genre is more than 50 characters', async () => {
-  //     newName = new Array(52).join('a');
+    it('should return 400 if name is more than 20 characters', async () => {
+      newName = new Array(22).join('a');
 
-  //     const res = await exe();
+      const res = await exe();
 
-  //     expect(res.status).toBe(400);
-  //   });
+      expect(res.status).toBe(400);
+    });
 
-  //   it('should return 404 if id is invalid', async () => {
-  //     id = 1;
+    it('should return 400 if phone is less than 6 characters', async () => {
+      newPhone = '12345';
 
-  //     const res = await exe();
+      const res = await exe();
 
-  //     expect(res.status).toBe(404);
-  //   });
+      expect(res.status).toBe(400);
+    });
 
-  //   it('should return 404 if genre with the given id was not found', async () => {
-  //     id = mongoose.Types.ObjectId();
+    it('should return 400 if phone is more than 20 characters', async () => {
+      newPhone = new Array(22).join('1');
 
-  //     const res = await exe();
+      const res = await exe();
 
-  //     expect(res.status).toBe(404);
-  //   });
+      expect(res.status).toBe(400);
+    });
 
-  //   it('should update the genre if input is valid', async () => {
-  //     await exe();
+    it('should return 404 if id is invalid', async () => {
+      id = 1;
 
-  //     const updatedGenre = await Genre.findById(genre._id);
+      const res = await exe();
 
-  //     expect(updatedGenre.name).toBe(newName);
-  //   });
+      expect(res.status).toBe(404);
+    });
 
-  //   it('should return the updated genre if it is valid', async () => {
-  //     const res = await exe();
+    it('should return 404 if customer with the given id was not found', async () => {
+      id = mongoose.Types.ObjectId();
 
-  //     expect(res.body).toHaveProperty('_id');
-  //     expect(res.body).toHaveProperty('name', newName);
-  //   });
-  // });
+      const res = await exe();
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should update the customer if input is valid', async () => {
+      await exe();
+
+      const updatedCustomer = await Customer.findById(customer._id);
+
+      expect(updatedCustomer.name).toBe(newName);
+      expect(updatedCustomer.phone).toBe(newPhone);
+      expect(updatedCustomer.isGold).toBe(newGoldStatus);
+    });
+
+    it('should return the updated customer if it is valid', async () => {
+      const res = await exe();
+
+      expect(res.body).toHaveProperty('_id');
+      expect(res.body).toHaveProperty('name', newName);
+      expect(res.body).toHaveProperty('phone', newPhone);
+      expect(res.body).toHaveProperty('isGold', newGoldStatus);
+    });
+  });
 });
