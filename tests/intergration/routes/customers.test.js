@@ -287,4 +287,65 @@ describe('/api/customers', () => {
       expect(res.body).toHaveProperty('isGold', newGoldStatus);
     });
   });
+
+  describe('DELETE /:id', () => {
+    let token;
+    let customer;
+    let id;
+
+    const exe = async () => {
+      return await request(server)
+        .delete('/api/customers/' + id)
+        .set('x-auth-token', token)
+        .send();
+    };
+
+    beforeEach(async () => {
+      customer = new Customer({ name: 'customer1', phone: '123456' });
+      await customer.save();
+
+      id = customer._id;
+      token = new User({ isAdmin: true }).generateAuthToken();
+    });
+
+    it('should return 403 if the user is not an admin', async () => {
+      token = new User({ isAdmin: false }).generateAuthToken();
+
+      const res = await exe();
+
+      expect(res.status).toBe(403);
+    });
+
+    it('should return 404 if id is invalid', async () => {
+      id = 1;
+
+      const res = await exe();
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should return 404 if no customer with the given id was found', async () => {
+      id = mongoose.Types.ObjectId();
+
+      const res = await exe();
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should delete the customer if input is valid', async () => {
+      await exe();
+
+      const customerInDb = await Customer.findById(id);
+
+      expect(customerInDb).toBeNull();
+    });
+
+    it('should return the removed customer', async () => {
+      const res = await exe();
+
+      expect(res.body).toHaveProperty('_id', customer._id.toHexString());
+      expect(res.body).toHaveProperty('name', customer.name);
+      expect(res.body).toHaveProperty('phone', customer.phone);
+    });
+  });
 });
