@@ -6,12 +6,9 @@ const mongoose = require('mongoose');
 
 describe('/api/customers', () => {
   let server;
-  let token;
 
   beforeEach(() => {
     server = require('../../../app');
-    token = new User().generateAuthToken();
-    return token;
   });
 
   afterEach(async () => {
@@ -20,6 +17,13 @@ describe('/api/customers', () => {
   });
 
   describe('GET /', () => {
+    let token;
+
+    beforeEach(() => {
+      token = new User().generateAuthToken();
+      return token;
+    });
+
     it('should return 401 if user is not logged in', async () => {
       token = '';
 
@@ -52,6 +56,13 @@ describe('/api/customers', () => {
   });
 
   describe('GET /:id', () => {
+    let token;
+
+    beforeEach(() => {
+      token = new User().generateAuthToken();
+      return token;
+    });
+
     it('should return 401 if user is not logged in', async () => {
       token = '';
 
@@ -91,6 +102,81 @@ describe('/api/customers', () => {
         .set('x-auth-token', token);
 
       expect(res.status).toBe(404);
+    });
+  });
+
+  describe('POST /', () => {
+    let token;
+    let name;
+    let phone;
+
+    const exe = async () => {
+      return await request(server)
+        .post('/api/customers')
+        .set('x-auth-token', token)
+        .send({ name, phone });
+    };
+
+    beforeEach(() => {
+      token = new User().generateAuthToken();
+      name = 'customer1';
+      phone = '123456';
+    });
+
+    it('should return 401 if user is not loggend in', async () => {
+      token = '';
+
+      const res = await exe();
+
+      expect(res.status).toBe(401);
+    });
+
+    it('should return 400 if customer name is less than 3 characters', async () => {
+      name = 'ab';
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if customer name is more than 20 characters', async () => {
+      name = new Array(22).join('a');
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if customer phone is less than 6 characters', async () => {
+      phone = '12345';
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if customer phone is more than 20 characters', async () => {
+      name = new Array(22).join('1');
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should save the customer if it is valid', async () => {
+      await exe();
+
+      const customer = await Customer.find({ name: 'genre1' });
+
+      expect(customer).not.toBeNull();
+    });
+
+    it('should return the customer if it is valid', async () => {
+      const res = await exe();
+
+      expect(res.body).toHaveProperty('_id');
+      expect(res.body).toHaveProperty('name', 'customer1');
+      expect(res.body).toHaveProperty('phone', '123456');
     });
   });
 });
