@@ -113,4 +113,104 @@ describe('/api/games', () => {
       expect(res.status).toBe(404);
     });
   });
+
+  describe('POST /', () => {
+    let token;
+    let title;
+    let genreId;
+    let numberInStock;
+    let dailyRentalRate;
+
+    const exe = async () => {
+      return await request(server)
+        .post('/api/games')
+        .set('x-auth-token', token)
+        .send({ title, genreId, numberInStock, dailyRentalRate });
+    };
+
+    beforeEach(async () => {
+      token = new User().generateAuthToken();
+      title = 'game1';
+      genreId = mongoose.Types.ObjectId();
+      numberInStock = 1;
+      dailyRentalRate = 1;
+
+      const genre = new Genre({ _id: genreId, name: 'genre1' });
+      await genre.save();
+    });
+
+    it('should return 401 if user is not loggend in', async () => {
+      token = '';
+
+      const res = await exe();
+
+      expect(res.status).toBe(401);
+    });
+
+    it('should return 400 if title is less than 3 characters', async () => {
+      title = 'ab';
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if title is more than 50 characters', async () => {
+      title = new Array(52).join('a');
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if genreId is not provided', async () => {
+      genreId = '';
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if invalid genreId is provided', async () => {
+      genreId = 1;
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if numberInStock is less than 0', async () => {
+      numberInStock = -1;
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if dailyRentalRate is less than 0', async () => {
+      dailyRentalRate = -1;
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should save the game if it is valid', async () => {
+      await exe();
+
+      const game = await Game.find({ name: 'game1' });
+
+      expect(game).not.toBeNull();
+    });
+
+    it('should return the game if it is valid', async () => {
+      const res = await exe();
+
+      expect(res.body).toHaveProperty('_id');
+      expect(res.body).toHaveProperty('title', 'game1');
+      expect(res.body).toHaveProperty('genre');
+      expect(res.body).toHaveProperty('numberInStock', 1);
+      expect(res.body).toHaveProperty('dailyRentalRate', 1);
+    });
+  });
 });
