@@ -351,4 +351,83 @@ describe('/api/games', () => {
       expect(res.body).toHaveProperty('dailyRentalRate', newDailyRentalRate);
     });
   });
+
+  describe('DELETE /:id', () => {
+    let token;
+    let game;
+    let id;
+
+    const exe = async () => {
+      return await request(server)
+        .delete('/api/games/' + id)
+        .set('x-auth-token', token)
+        .send();
+    };
+
+    beforeEach(async () => {
+      const genre = new Genre({ name: 'genre1' });
+
+      game = new Game({
+        title: 'game1',
+        genre,
+        numberInStock: 1,
+        dailyRentalRate: 1,
+      });
+
+      await game.save();
+
+      id = game._id;
+      token = new User({ isAdmin: true }).generateAuthToken();
+    });
+
+    it('should return 401 if user is not logged in', async () => {
+      token = '';
+
+      const res = await exe();
+
+      expect(res.status).toBe(401);
+    });
+
+    it('should return 403 if the user is not an admin', async () => {
+      token = new User({ isAdmin: false }).generateAuthToken();
+
+      const res = await exe();
+
+      expect(res.status).toBe(403);
+    });
+
+    it('should return 404 if id is invalid', async () => {
+      id = 1;
+
+      const res = await exe();
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should return 404 if no game with the given id was found', async () => {
+      id = mongoose.Types.ObjectId();
+
+      const res = await exe();
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should delete the game if input is valid', async () => {
+      await exe();
+
+      const gameInDB = await Game.findById(id);
+
+      expect(gameInDB).toBeNull();
+    });
+
+    it('should return the removed customer', async () => {
+      const res = await exe();
+
+      expect(res.body).toHaveProperty('_id', game._id.toHexString());
+      expect(res.body).toHaveProperty('title', game.title);
+      expect(res.body).toHaveProperty('genre');
+      expect(res.body).toHaveProperty('numberInStock', game.numberInStock);
+      expect(res.body).toHaveProperty('dailyRentalRate', game.dailyRentalRate);
+    });
+  });
 });
