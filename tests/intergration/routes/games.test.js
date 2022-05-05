@@ -12,6 +12,7 @@ describe('/api/games', () => {
   afterEach(async () => {
     await server.close();
     await Game.deleteMany({});
+    await Genre.deleteMany({});
   });
 
   describe('GET /', () => {
@@ -82,17 +83,11 @@ describe('/api/games', () => {
         .set('x-auth-token', token);
 
       expect(res.status).toBe(200);
-      expect(Object.keys(res.body)).toEqual(
-        expect.arrayContaining([
-          'title',
-          'genre',
-          'numberInStock',
-          'dailyRentalRate',
-        ])
-      );
-      expect(res.body).toHaveProperty('title', game.title);
-      expect(res.body).toHaveProperty('numberInStock', game.numberInStock);
-      expect(res.body).toHaveProperty('dailyRentalRate', game.dailyRentalRate);
+      expect(res.body).toHaveProperty('_id');
+      expect(res.body).toHaveProperty('title', 'game1');
+      expect(res.body).toHaveProperty('genre');
+      expect(res.body).toHaveProperty('numberInStock', 1);
+      expect(res.body).toHaveProperty('dailyRentalRate', 2);
     });
 
     it('should return 404 if invalid id is passed', async () => {
@@ -211,6 +206,149 @@ describe('/api/games', () => {
       expect(res.body).toHaveProperty('genre');
       expect(res.body).toHaveProperty('numberInStock', 1);
       expect(res.body).toHaveProperty('dailyRentalRate', 1);
+    });
+  });
+
+  describe('PUT /:id', () => {
+    let token;
+    let game;
+    let newTitle;
+    let newGenreId;
+    let newGenre;
+    let newNumberInStock;
+    let newDailyRentalRate;
+    let id;
+
+    const exe = async () => {
+      return await request(server)
+        .put('/api/games/' + id)
+        .set('x-auth-token', token)
+        .send({
+          title: newTitle,
+          genreId: newGenreId,
+          numberInStock: newNumberInStock,
+          dailyRentalRate: newDailyRentalRate,
+        });
+    };
+
+    beforeEach(async () => {
+      const genreId = mongoose.Types.ObjectId();
+      const genre = new Genre({ _id: genreId, name: 'genre1' });
+      await genre.save();
+
+      game = new Game({
+        title: 'game1',
+        genre,
+        numberInStock: 1,
+        dailyRentalRate: 1,
+      });
+
+      await game.save();
+
+      const updatedGenreId = mongoose.Types.ObjectId();
+      const updatedGenre = new Genre({ _id: updatedGenreId, name: 'genre2' });
+      await updatedGenre.save();
+
+      token = new User().generateAuthToken();
+      id = game._id;
+      newTitle = 'updatedTitle';
+      newGenreId = updatedGenreId;
+      newGenre = updatedGenre;
+      newNumberInStock = 2;
+      newDailyRentalRate = 2;
+    });
+
+    it('should return 401 if user is not logged in', async () => {
+      token = '';
+
+      const res = await exe();
+
+      expect(res.status).toBe(401);
+    });
+
+    it('should return 400 if title is less than 3 characters', async () => {
+      newTitle = 'ab';
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if title is more than 50 characters', async () => {
+      newTitle = new Array(52).join('a');
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if genreId is not provided', async () => {
+      newGenreId = '';
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if genreId is invalid', async () => {
+      newGenreId = 1;
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if numberInStock is less than 0', async () => {
+      newNumberInStock = -1;
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if dailyRentalRate is less than 0', async () => {
+      newDailyRentalRate = -1;
+
+      const res = await exe();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 404 if game id is invalid', async () => {
+      id = 1;
+
+      const res = await exe();
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should return 404 if game with the given id was not found', async () => {
+      id = mongoose.Types.ObjectId();
+
+      const res = await exe();
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should update the game if input is valid', async () => {
+      await exe();
+
+      const updatedGame = await Game.findById(game._id);
+
+      expect(updatedGame.title).toBe(newTitle);
+      expect(updatedGame.genre.name).toBe(newGenre.name);
+      expect(updatedGame.numberInStock).toBe(newNumberInStock);
+      expect(updatedGame.dailyRentalRate).toBe(newDailyRentalRate);
+    });
+
+    it('should return the updated game if it is valid', async () => {
+      const res = await exe();
+
+      expect(res.body).toHaveProperty('_id');
+      expect(res.body).toHaveProperty('title', newTitle);
+      expect(res.body).toHaveProperty('genre');
+      expect(res.body).toHaveProperty('numberInStock', newNumberInStock);
+      expect(res.body).toHaveProperty('dailyRentalRate', newDailyRentalRate);
     });
   });
 });
