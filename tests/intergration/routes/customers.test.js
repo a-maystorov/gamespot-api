@@ -98,7 +98,7 @@ describe('/api/customers', () => {
       const id = mongoose.Types.ObjectId();
 
       const res = await request(server)
-        .get('/api/genres/' + id)
+        .get('/api/customers/' + id)
         .set('x-auth-token', token);
 
       expect(res.status).toBe(404);

@@ -109,7 +109,7 @@ describe('/api/returns', () => {
     expect(res.status).toBe(200);
   });
 
-  it('should set the returnDate if inut is valid', async () => {
+  it('should set the returnDate if input is valid', async () => {
     await exe();
 
     const rentalInDb = await Rental.findById(rental._id);
@@ -118,7 +118,7 @@ describe('/api/returns', () => {
     expect(diff).toBeLessThan(10 * 1000);
   });
 
-  it('should set the rentalFee if inut is valid', async () => {
+  it('should set the rentalFee if input is valid', async () => {
     rental.dateOut = moment().add(-7, 'days').toDate();
     await rental.save();
 

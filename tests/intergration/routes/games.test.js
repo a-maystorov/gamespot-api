@@ -86,6 +86,7 @@ describe('/api/games', () => {
       expect(res.body).toHaveProperty('_id');
       expect(res.body).toHaveProperty('title', 'game1');
       expect(res.body).toHaveProperty('genre');
+      expect(res.body.genre).toHaveProperty('name', 'genre1');
       expect(res.body).toHaveProperty('numberInStock', 1);
       expect(res.body).toHaveProperty('dailyRentalRate', 2);
     });
@@ -204,6 +205,7 @@ describe('/api/games', () => {
       expect(res.body).toHaveProperty('_id');
       expect(res.body).toHaveProperty('title', 'game1');
       expect(res.body).toHaveProperty('genre');
+      expect(res.body.genre).toHaveProperty('name', 'genre1');
       expect(res.body).toHaveProperty('numberInStock', 1);
       expect(res.body).toHaveProperty('dailyRentalRate', 1);
     });
@@ -347,6 +349,7 @@ describe('/api/games', () => {
       expect(res.body).toHaveProperty('_id');
       expect(res.body).toHaveProperty('title', newTitle);
       expect(res.body).toHaveProperty('genre');
+      expect(res.body.genre).toHaveProperty('name', newGenre.name);
       expect(res.body).toHaveProperty('numberInStock', newNumberInStock);
       expect(res.body).toHaveProperty('dailyRentalRate', newDailyRentalRate);
     });
@@ -426,6 +429,7 @@ describe('/api/games', () => {
       expect(res.body).toHaveProperty('_id', game._id.toHexString());
       expect(res.body).toHaveProperty('title', game.title);
       expect(res.body).toHaveProperty('genre');
+      expect(res.body.genre).toHaveProperty('name', game.genre.name);
       expect(res.body).toHaveProperty('numberInStock', game.numberInStock);
       expect(res.body).toHaveProperty('dailyRentalRate', game.dailyRentalRate);
     });
