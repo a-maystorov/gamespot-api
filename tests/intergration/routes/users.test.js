@@ -16,7 +16,6 @@ describe('/api/users', () => {
   describe('GET /me', () => {
     beforeEach(() => {
       token = new User().generateAuthToken();
-      return token;
     });
 
     it('should return 401 if user is not logged in', async () => {
