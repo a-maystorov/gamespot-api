@@ -5,6 +5,8 @@ const { Game } = require('../../../models/game');
 const mongoose = require('mongoose');
 
 describe('/api/games', () => {
+  let server;
+
   beforeEach(() => {
     server = require('../../../app');
   });

@@ -38,7 +38,7 @@ const data = [
 ];
 
 async function seed() {
-  await mongoose.connect(`mongodb://localhost:27017/GameSpot`);
+  await mongoose.connect(`mongodb://localhost:27017/gamespot_tests`);
 
   await Game.deleteMany({});
   await Genre.deleteMany({});
