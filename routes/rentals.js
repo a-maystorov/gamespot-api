@@ -7,7 +7,7 @@ const Fawn = require('fawn');
 const express = require('express');
 const router = express.Router();
 
-const DB = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSWORD}@gamespot.lnlf7.mongodb.net/?retryWrites=true&w=majority`;
+const DB = process.env.DB_URI;
 const TESTS_DB = process.env.TESTS_DB_URI;
 
 Fawn.init(DB);
