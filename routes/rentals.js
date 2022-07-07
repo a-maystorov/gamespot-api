@@ -2,15 +2,11 @@ const { Rental, validate } = require('../models/rental');
 const { Game } = require('../models/game');
 const { Customer } = require('../models/customer');
 
-const Fawn = require('fawn');
-
 const express = require('express');
 const router = express.Router();
 
 const DB = process.env.DB_URI;
 const TESTS_DB = process.env.TESTS_DB_URI;
-
-Fawn.init(DB);
 
 const auth = require('../middleware/auth');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -46,16 +42,16 @@ router.post('/', auth, async (req, res) => {
     },
   });
 
-  try {
-    new Fawn.Task()
-      .save('rentals', rental)
-      .update('games', { _id: game._id }, { $inc: { numberInStock: -1 } })
-      .run();
+  await Game.updateOne(
+    { _id: rental.game._id },
+    {
+      $inc: { numberInStock: -1 },
+    }
+  );
 
-    res.send(rental);
-  } catch (ex) {
-    res.status(500).send('Something went wrong...');
-  }
+  await rental.save();
+
+  return res.send(rental);
 });
 
 router.get('/:id', [auth, validateObjectId], async (req, res) => {
