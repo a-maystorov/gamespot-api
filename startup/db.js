@@ -10,6 +10,6 @@ module.exports = function () {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
-    .then(() => winston.info(`Connected to MongoDB.`))
+    .then(() => winston.info(`Connected to ${DB}.`))
     .catch((err) => winston.error('Error connecting to DB: ', err));
 };
