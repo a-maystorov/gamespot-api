@@ -5,9 +5,6 @@ const { Customer } = require('../models/customer');
 const express = require('express');
 const router = express.Router();
 
-const DB = process.env.DB_URI;
-const TESTS_DB = process.env.TESTS_DB_URI;
-
 const auth = require('../middleware/auth');
 const validateObjectId = require('../middleware/validateObjectId');
 
@@ -56,6 +53,15 @@ router.post('/', auth, async (req, res) => {
 
 router.get('/:id', [auth, validateObjectId], async (req, res) => {
   const rental = await Rental.findById(req.params.id);
+
+  if (!rental)
+    return res.status(404).send('The rental with the given ID was not found.');
+
+  res.send(rental);
+});
+
+router.delete('/:id', [auth, validateObjectId], async (req, res) => {
+  const rental = await Rental.findByIdAndDelete(req.params.id);
 
   if (!rental)
     return res.status(404).send('The rental with the given ID was not found.');
