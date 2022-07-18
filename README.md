@@ -40,9 +40,9 @@ GameSpot is a video game rental service where users can perform role based CRUD 
 
   - bcrypt
 
-## Tests
+## Tests:
 
-- Over 97% of the files have been tested with passing results.
+- Over 97% of all the files have been tested with passing results.
 
 ![api-tests](https://user-images.githubusercontent.com/76817540/179432217-00f4a222-b0fa-4b6d-9055-c001f9edb416.jpeg)
 
