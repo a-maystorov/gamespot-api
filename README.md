@@ -1,24 +1,12 @@
 # GameSpot-API
 
-The backend-api for my fullstack video game rental service project with the main focus being around mastering express, mongodb and mongoose.
+A backend api mainly responsible for role based CRUD operations.
 
 ## What is GameSpot?
 
-GameSpot is a project build with the intent of keeping track of the games, customers and rentals of an imaginary video game rental service. The employees of the service are only able to view the games that are in stock initially until they create an account after which they will be able to perform basic CRUD operations and view pages which require authentication with some restrictions (only admins can delete games from the database for example). The project was my intro to unit and integration testing also making use of the best practices to my knowledge including error handling, making everything maintainable and scalable as best I could.
+GameSpot is a video game rental service where users can perform role based CRUD operations and keep track of the available for rent or already rented out games.
 
-- The frontend is still in the works, more info can be found here: https://github.com/SirDev97/GameSpot
-
-## Operations the users can commit after an account creation and logging in:
-
-- Create, edit and get customer data.
-
-- Create, edit and get game data.
-
-- Create, edit and get game genres.
-
-- Create rentals and returns.
-
-- Delete operation on all routes only reserved for admin users.
+- the frontend client can be found [HERE](https://github.com/a-maystorov/gamespot-client)
 
 ## Technologies:
 
@@ -38,8 +26,6 @@ GameSpot is a project build with the intent of keeping track of the games, custo
 
 - Dependencies:
 
-  - fawn
-
   - joi and joi-objectid
 
   - lodash
@@ -54,32 +40,28 @@ GameSpot is a project build with the intent of keeping track of the games, custo
 
   - bcrypt
 
-## Setup
+## Tests
 
-To run this project, install it locally using npm:
+- Over 97% of the files have been tested with passing results.
 
-> :warning: **The project is still not deployed meaning the database only can run locally for the time beign**: With this in mind you would need to connect to your own local mongo database. You can find everything you need for this in the db.js file in the startup folder.
+## Installation
 
-1. Download the ZIP files.
+1. Download the ZIP files or clone the repo.
 
-2. Navigate to the project root directory using your terminal of choice (I use Ubuntu).
+2. Navigate to the project root directory using your terminal and IDE of choice.
 
 3. Run `npm install` to install all of the project dependencies.
 
-4. Run `code .` to open your code editor.
+4. Change mongodb connection string in the starup folder and seed.js file to your preference.
 
 5. In the terminal run `node seed.js` to populate the database with some games and genres.
 
 6. Run `node app.js` to start the server.
 
-7. You can view all of the games only your local port: http://localhost: `PORT` /api/games
+> :warning: **The frontend for this project has been build and if you would like to only do some basic testing I recommend visiting the hosted project**
 
-   - Note: You can view the data but cannot change any of it without an account, you would need to change the port in the app.js file to your desired port or you will not see anything.
+- [Hosted project](https://gamespotz.netlify.app/games)
 
-> :warning: **If you are getting an error when trying to run the server uninstall and install bcrypt again!**
-
-## Preview of seeded games in the browser and mongoDB Compass:
-
-![alt text](https://github.com/SirDev97/GameSpot-API/blob/main/assets/browser.jpeg?raw=true)
+## Example of a collection in Compass:
 
 ![alt text](https://github.com/SirDev97/GameSpot-API/blob/main/assets/compass.jpeg?raw=true)
