@@ -4,7 +4,7 @@ A backend api mainly responsible for role based CRUD operations and processing r
 
 ## What is GameSpot?
 
-GameSpot is a service that allows easy management for games as well as customers and rentals. It lets users add games and customer information to the database for future rental opportunities by submitting a form and eventually processing the return while setting the date out, date returned, and the rental fee.
+GameSpot is a service that allows easy management for games as well as customers and rentals. It lets users add games and customer information to the database for future rental opportunities and eventually processing the return while setting the date out, date returned, and the rental fee.
 
 - the frontend client codebase can be found [HERE](https://github.com/a-maystorov/gamespot-client)
 
