@@ -42,7 +42,7 @@ GameSpot is a service that allows easy management for games as well as customers
 
 ## Tests:
 
-- Over 97% of all the files have been tested with passing results.
+- Over 97% coverage with passing results.
 
 ![api-tests](https://user-images.githubusercontent.com/76817540/179432217-00f4a222-b0fa-4b6d-9055-c001f9edb416.jpeg)
 
@@ -58,11 +58,13 @@ GameSpot is a service that allows easy management for games as well as customers
 
 3. Run `npm install` to install all of the project dependencies.
 
-4. Change mongodb connection string in the starup folder and seed.js file to your preference.
+4. Change mongodb connection string in the startup folder and seed.js file to your preference.
 
 5. In the terminal run `node seed.js` to populate the database with some games and genres.
 
 6. Run `node app.js` to start the server.
+
+  - for testing run `npm run test`
 
 > :warning: **The frontend for this project has been build and if you would like to only do some basic testing I recommend visiting the hosted project**
 
