@@ -44,6 +44,12 @@ GameSpot is a video game rental service where users can perform role based CRUD 
 
 - Over 97% of the files have been tested with passing results.
 
+![api-tests](https://user-images.githubusercontent.com/76817540/179432217-00f4a222-b0fa-4b6d-9055-c001f9edb416.jpeg)
+
+  - Example of a passing test suite:
+  
+  ![customers-test-suite](https://user-images.githubusercontent.com/76817540/179432249-9f53b7e4-3c23-43f9-9c82-b6758691502d.jpeg)
+
 ## Installation
 
 1. Download the ZIP files or clone the repo.
