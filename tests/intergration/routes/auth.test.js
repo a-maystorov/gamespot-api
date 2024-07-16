@@ -1,25 +1,25 @@
-const request = require('supertest');
-const bcrypt = require('bcrypt');
-const { User } = require('../../../models/user');
+const request = require("supertest");
+const bcrypt = require("bcrypt");
+const { User } = require("../../../models/user");
 
-describe('/api/auth', () => {
+describe("/api/auth", () => {
   let server;
   let user;
   let email;
   let password;
 
   const exe = () => {
-    return request(server).post('/api/auth').send({ email, password });
+    return request(server).post("/api/auth").send({ email, password });
   };
 
   beforeEach(async () => {
-    server = require('../../../app');
+    server = require("../../../app");
 
-    email = 'email@dev.io';
-    password = '12345';
+    email = "email@dev.io";
+    password = "12345";
 
     user = await new User({
-      name: 'name1',
+      name: "name1",
       email,
       password,
     });
@@ -35,7 +35,7 @@ describe('/api/auth', () => {
     await User.deleteMany({});
   });
 
-  it('should return 400 if email is not provided', async () => {
+  it("should return 400 if email is not provided", async () => {
     email = null;
 
     const res = await exe();
@@ -43,7 +43,7 @@ describe('/api/auth', () => {
     expect(res.status).toBe(400);
   });
 
-  it('should return 400 if password is not provided', async () => {
+  it("should return 400 if password is not provided", async () => {
     password = null;
 
     const res = await exe();
@@ -51,38 +51,38 @@ describe('/api/auth', () => {
     expect(res.status).toBe(400);
   });
 
-  it('should return 400 if email is invalid', async () => {
-    email = 'abc@mail.io';
+  it("should return 400 if email is invalid", async () => {
+    email = "abc@mail.io";
 
     const res = await exe();
 
     expect(res.status).toBe(400);
   });
 
-  it('should return 400 if password is invalid', async () => {
-    password = '11111';
+  it("should return 400 if password is invalid", async () => {
+    password = "11111";
 
     const res = await exe();
 
     expect(res.status).toBe(400);
   });
 
-  it('should return 200 if we have a valid request', async () => {
+  it("should return 200 if we have a valid request", async () => {
     const res = await exe();
 
     expect(res.status).toBe(200);
   });
 
-  it('should return true if the hashed and user password are the same', async () => {
-    const validPassword = '12345';
+  it("should return true if the hashed and user password are the same", async () => {
+    const validPassword = "12345";
 
     const auth = await bcrypt.compare(validPassword, user.password);
 
     expect(auth).toEqual(true);
   });
 
-  it('should return false if the hashed and user password are not the same', async () => {
-    const invalidPassword = '11111';
+  it("should return false if the hashed and user password are not the same", async () => {
+    const invalidPassword = "11111";
 
     const auth = await bcrypt.compare(invalidPassword, user.password);
 

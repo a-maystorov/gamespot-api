@@ -1,8 +1,7 @@
-const winston = require('winston');
-const mongoose = require('mongoose');
+const winston = require("winston");
+const mongoose = require("mongoose");
 
 const DB = process.env.DB_URI;
-const TESTS_DB = process.env.TESTS_DB_URI;
 
 module.exports = function () {
   mongoose
@@ -11,5 +10,5 @@ module.exports = function () {
       useUnifiedTopology: true,
     })
     .then(() => winston.info(`Connected to ${DB}.`))
-    .catch((err) => winston.error('Error connecting to DB: ', err));
+    .catch((err) => winston.error("Error connecting to DB: ", err));
 };

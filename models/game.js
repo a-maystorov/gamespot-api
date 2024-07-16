@@ -1,9 +1,9 @@
-const Joi = require('joi');
-const mongoose = require('mongoose');
-const { genreSchema } = require('./genre');
+const Joi = require("joi");
+const mongoose = require("mongoose");
+const { genreSchema } = require("./genre");
 
 const Game = mongoose.model(
-  'Game',
+  "Game",
   new mongoose.Schema({
     title: {
       type: String,

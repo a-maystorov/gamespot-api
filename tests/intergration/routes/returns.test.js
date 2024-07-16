@@ -1,14 +1,14 @@
-const { Rental } = require('../../../models/rental');
-const { User } = require('../../../models/user');
-const { Game } = require('../../../models/game');
+const { Rental } = require("../../../models/rental");
+const { User } = require("../../../models/user");
+const { Game } = require("../../../models/game");
 
-const mongoose = require('mongoose');
-const request = require('supertest');
-const moment = require('moment');
+const mongoose = require("mongoose");
+const request = require("supertest");
+const moment = require("moment");
 
 jest.setTimeout(100 * 1000);
 
-describe('/api/returns', () => {
+describe("/api/returns", () => {
   let server;
   let customerId;
   let gameId;
@@ -18,13 +18,13 @@ describe('/api/returns', () => {
 
   const exe = () => {
     return request(server)
-      .post('/api/returns')
-      .set('x-auth-token', token)
+      .post("/api/returns")
+      .set("x-auth-token", token)
       .send({ customerId, gameId });
   };
 
   beforeEach(async () => {
-    server = require('../../../app');
+    server = require("../../../app");
 
     customerId = mongoose.Types.ObjectId();
     gameId = mongoose.Types.ObjectId();
@@ -32,9 +32,9 @@ describe('/api/returns', () => {
 
     game = new Game({
       _id: gameId,
-      title: '12345',
+      title: "12345",
       dailyRentalRate: 3,
-      genre: { name: '12345' },
+      genre: { name: "12345" },
       numberInStock: 10,
     });
 
@@ -43,12 +43,12 @@ describe('/api/returns', () => {
     rental = new Rental({
       customer: {
         _id: customerId,
-        name: '123',
-        phone: '123456',
+        name: "123",
+        phone: "123456",
       },
       game: {
         _id: gameId,
-        title: '123',
+        title: "123",
         dailyRentalRate: 2,
       },
     });
@@ -62,31 +62,31 @@ describe('/api/returns', () => {
     await Game.deleteMany({});
   });
 
-  it('should return 401 if client is not logged in', async () => {
-    token = '';
+  it("should return 401 if client is not logged in", async () => {
+    token = "";
 
     const res = await exe();
 
     expect(res.status).toBe(401);
   });
 
-  it('should return 400 if customerId is not provided', async () => {
-    customerId = '';
+  it("should return 400 if customerId is not provided", async () => {
+    customerId = "";
 
     const res = await exe();
 
     expect(res.status).toBe(400);
   });
 
-  it('should return 400 if gameId is not provided', async () => {
-    gameId = '';
+  it("should return 400 if gameId is not provided", async () => {
+    gameId = "";
 
     const res = await exe();
 
     expect(res.status).toBe(400);
   });
 
-  it('should return 404 if no rental found for the customer/game', async () => {
+  it("should return 404 if no rental found for the customer/game", async () => {
     await Rental.deleteMany({});
 
     const res = await exe();
@@ -94,7 +94,7 @@ describe('/api/returns', () => {
     expect(res.status).toBe(404);
   });
 
-  it('should return 400 if return is already processed', async () => {
+  it("should return 400 if return is already processed", async () => {
     rental.dateReturned = new Date();
     await rental.save();
 
@@ -103,13 +103,13 @@ describe('/api/returns', () => {
     expect(res.status).toBe(400);
   });
 
-  it('should return 200 if we have a valid request', async () => {
+  it("should return 200 if we have a valid request", async () => {
     const res = await exe();
 
     expect(res.status).toBe(200);
   });
 
-  it('should set the returnDate if input is valid', async () => {
+  it("should set the returnDate if input is valid", async () => {
     await exe();
 
     const rentalInDb = await Rental.findById(rental._id);
@@ -118,8 +118,8 @@ describe('/api/returns', () => {
     expect(diff).toBeLessThan(10 * 1000);
   });
 
-  it('should set the rentalFee if input is valid', async () => {
-    rental.dateOut = moment().add(-7, 'days').toDate();
+  it("should set the rentalFee if input is valid", async () => {
+    rental.dateOut = moment().add(-7, "days").toDate();
     await rental.save();
 
     await exe();
@@ -129,7 +129,7 @@ describe('/api/returns', () => {
     expect(rentalInDb.rentalFee).toBe(14);
   });
 
-  it('should increase the game stock if input is valid', async () => {
+  it("should increase the game stock if input is valid", async () => {
     await exe();
 
     const gameInDb = await Game.findById(gameId);
@@ -137,19 +137,13 @@ describe('/api/returns', () => {
     expect(gameInDb.numberInStock).toBe(game.numberInStock + 1);
   });
 
-  it('should return the rental if input is valid ', async () => {
+  it("should return the rental if input is valid ", async () => {
     const res = await exe();
 
     await Rental.findById(rental._id);
 
     expect(Object.keys(res.body)).toEqual(
-      expect.arrayContaining([
-        'dateOut',
-        'dateReturned',
-        'rentalFee',
-        'customer',
-        'game',
-      ])
+      expect.arrayContaining(["dateOut", "dateReturned", "rentalFee", "customer", "game"])
     );
   });
 });

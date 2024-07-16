@@ -1,22 +1,20 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const winston = require('winston');
+const winston = require("winston");
 
-const PORT = process.env.PORT; // change to desired port
+const PORT = process.env.PORT;
 
-const express = require('express');
+const express = require("express");
 const app = express();
 
-require('./startup/logger')();
-require('./startup/cors')(app);
-require('./startup/routes')(app);
-require('./startup/prod')(app);
-require('./startup/db')();
-require('./startup/config')();
-require('./startup/validation')();
+require("./startup/logger")();
+require("./startup/cors")(app);
+require("./startup/routes")(app);
+require("./startup/prod")(app);
+require("./startup/db")();
+require("./startup/config")();
+require("./startup/validation")();
 
-const server = app.listen(PORT, () =>
-  winston.info(`Listening on port ${PORT}.`)
-);
+const server = app.listen(PORT, () => winston.info(`Listening on port ${PORT}.`));
 
 module.exports = server;
